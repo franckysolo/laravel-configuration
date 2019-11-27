@@ -1,0 +1,12 @@
+{
+  "String": "Chaine de caractères",
+  "Integer": "Entier",
+  "Float": "Nombre décimal",
+  "Serialized": "Object ou tableau serialisé",
+  "Json": "Object ou tableau json",
+  "Parameter": "Paramêtre",
+  "Description": "Description",
+  "Type": "Type",
+  "Value": "Valeur",
+  "Action": "Action"
+}

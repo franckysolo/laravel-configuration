@@ -1,0 +1,33 @@
+{
+    "name": "franckysolo/laravel-configuration",
+    "description": "Example laravel package for dynamic configurations variables",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "franckysolo",
+            "email": "franckysolo@gmail.com"
+        },
+        {
+            "name": "nicolas",
+            "email": "nicolas@lemarson.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2"
+    },
+    "autoload": {
+        "classmap": ["src/"],
+        "psr-4": {
+            "Indy\\LaravelConfiguration\\": "src/"
+        }
+     },
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^8.4"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}

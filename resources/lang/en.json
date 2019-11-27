@@ -1,0 +1,12 @@
+{
+  "String": "String value",
+  "Integer": "Integer value",
+  "Float": "Float value",
+  "Serialized": "Serialized object or array",
+  "Json": "Json data",
+  "Parameter": "Parameter",
+  "Description": "Description",
+  "Type": "Type",
+  "Value": "Value",
+  "Action": "Action"
+}
