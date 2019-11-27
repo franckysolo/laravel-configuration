@@ -3,6 +3,8 @@
 namespace Indy\LaravelConfiguration;
 
 use Illuminate\Support\ServiceProvider;
+use Indy\LaravelConfiguration\Http\Middleware\Settings;
+use Indy\LaravelConfiguration\Console\InstallConfigurationCommand as InstallPackage;
 
 /**
  * @author franckysolo
@@ -17,10 +19,12 @@ class ConfigurationServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->registerMiddleWare();
         $this->registerRoutes();
         $this->registerResources();
         $this->registerMigrations();
         $this->registerPublishing();
+        $this->registerCommand();
     }
 
     /**
@@ -55,8 +59,15 @@ class ConfigurationServiceProvider extends ServiceProvider
      */
     protected function registerResources()
     {
-        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'configurations');
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang', 'configurations');
+
+        if ($this->app->environment('testing')) {
+            $dirname = __DIR__ . '/../tests/views';
+        } else {
+            $dirname = __DIR__ . '/../resources/views';
+        }
+
+        $this->loadViewsFrom($dirname, 'configurations');
     }
 
     /**
@@ -66,7 +77,7 @@ class ConfigurationServiceProvider extends ServiceProvider
      */
     protected function registerMigrations()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() && !$this->app->environment('testing')) {
             $this->loadMigrationsFrom(__DIR__ . '/../databases/migrations');
         }
     }
@@ -80,16 +91,55 @@ class ConfigurationServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../databases/migrations' => $this->app->databasePath('migrations'),
+               __DIR__ . '/../config/configuration.php' => config_path('configuration.php')
+            ], 'configurations-settings');
+
+            if ($this->app->environment('testing')) {
+                $filename = 'migrations/0000_00_00_000000_create_configurations_table.php';
+            } else {
+                $filename = 'migrations/' . date('Y_m_d_His', time()) . '_create_configurations_table.php';
+            }
+
+            $this->publishes([
+              __DIR__ . '/../databases/migrations/create_configurations_table.php.stub' => database_path($filename),
             ], 'configurations-migrations');
 
             $this->publishes([
-                __DIR__ . '../resources/lang' => resource_path('lang/vendor/configurations'),
+                __DIR__ . '/../resources/lang' => $this->app->resourcePath('lang/vendor/configurations'),
             ], 'configurations-translations');
 
+            if ($this->app->environment('testing')) {
+                $dirname = __DIR__ . '/../tests/views';
+            } else {
+                $dirname = __DIR__ . '/../resources/views';
+            }
+
             $this->publishes([
-                __DIR__ . '/../resources/views' => $this->app->resourcePath('views/vendor/configurations'),
+                $dirname => $this->app->resourcePath('views/vendor/configurations'),
             ], 'configurations-views');
+        }
+    }
+
+    /**
+     * Register the package middleware.
+     *
+     * @return void
+     */
+    protected function registerMiddleWare()
+    {
+        $router = $this->app['router'];
+        $router->aliasMiddleware('settings', Settings::class);
+    }
+
+    /**
+     * Register the package command.
+     *
+     * @return void
+     */
+    protected function registerCommand()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([InstallPackage::class]);
         }
     }
 }

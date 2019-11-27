@@ -9,7 +9,7 @@
         },
         {
             "name": "nicolas",
-            "email": "nicolas@lemarson.com"
+            "email": "nicolas@gnmwebdesign.com"
         }
     ],
     "require": {
@@ -27,7 +27,17 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Indy\\LaravelConfiguration\\Tests\\": "tests/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Indy\\LaravelConfiguration\\ConfigurationServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --testdox"
     }
 }

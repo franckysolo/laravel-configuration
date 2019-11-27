@@ -28,13 +28,13 @@ class ConfigurationRequest extends FormRequest
           'name' => 'required|string|max:64',
           'value' => 'required|string|max:2000',
           'description' => 'nullable|string|max:191',
-          'type' => 'required|in:string,int,float,serialized',
+          'type' => 'required|in:string,int,float,serialized,json',
         ];
-        if ($this->method() === 'PUT') {
-            $params = Rule::unique('configurations')
-                        ->ignore($this->configuration->id);
-            $rules['name'] = ['required', 'string', 'max:64', $params];
-        }
+        // if ($this->method() === 'PUT') {
+        //     $params = Rule::unique('configurations')
+        //                 ->ignore($this->configuration->id);
+        //     $rules['name'] = ['required', 'string', 'max:64', $params];
+        // }
         return $rules;
     }
 }
